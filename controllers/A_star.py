@@ -1,32 +1,135 @@
-"""A_Star controller."""
+import numpy as np
+import math
+import copy
 
-# You may need to import some classes of the controller module. Ex:
-#  from controller import Robot, Motor, DistanceSensor
-from controller import Robot
+def hc(grid,start,end):
+    #Using euclidean distance as heuristic h(n)
+    #f(n)=g(n)+h(n)
+    heuristic=copy.deepcopy(grid)
+    for i in range(len(grid)):
+        for j in range(len(grid)):
+            heuristic[i][j]=math.sqrt((j-end[1])**2+(i-end[0])**2)
+    print(heuristic)
+    return heuristic
 
-# create the Robot instance.
-robot = Robot()
 
-# get the time step of the current world.
-timestep = int(robot.getBasicTimeStep())
+    
+grid = [
+    [1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [0, 0, 0, 0, 0, 0, 0, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 0, 1],
+    [1, 0, 0, 0, 1, 0, 1, 0, 1],
+    [1, 0, 1, 1, 1, 0, 1, 0, 1],
+    [1, 0, 1, 0, 1, 0, 1, 0, 1],
+    [1, 1, 1, 1, 0, 1, 1, 1, 1],
+    [1, 1, 0, 0, 0, 0, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1, 0, 1, 1]
+]
 
-# You should insert a getDevice-like function in order to get the
-# instance of a device of the robot. Something like:
-#  motor = robot.getDevice('motorname')
-#  ds = robot.getDevice('dsname')
-#  ds.enable(timestep)
+start=[7,1]
+end=[0,8]
 
-# Main loop:
-# - perform simulation steps until Webots is stopping the controller
-while robot.step(timestep) != -1:
-    # Read the sensors:
-    # Enter here functions to read sensor data, like:
-    #  val = ds.getValue()
 
-    # Process sensor data here.
+heuristic=hc(grid,start,end)
 
-    # Enter here functions to send actuator commands, like:
-    #  motor.setPosition(10.0)
-    pass
 
-# Enter here exit cleanup code.
+
+#Needs to keep track of all open nodes
+#each open node will have fn
+
+def A_star_search(grid,start,end,heuristic):
+    #Every step cost 1 g(n)
+    visited=[]
+    open_nodes=[]
+    step=1
+    gn={tuple(start):0}
+    current=start.copy()
+    fn=[]
+    path={}
+    while end not in visited:
+        if (current[0]+2)<=len(grid):
+            if grid[current[0]+1][current[1]]==1 and ([current[0]+1,current[1]] not in visited):
+                #fn[0]=gn+step+heuristic[current[0]+1][current[1]]
+                print("down")
+                open_nodes.append([current[0]+1,current[1]])
+                if (current[0]+1,current[1]) in gn:
+                    if gn[(current[0]+1,current[1])]>gn[(current[0],current[1])]+step:
+                        gn[(current[0]+1,current[1])]=gn[(current[0],current[1])]+step
+                else:
+                     gn[(current[0]+1,current[1])]=gn[(current[0],current[1])]+step
+                fn.append(gn[(current[0]+1,current[1])]+heuristic[current[0]+1][current[1]])
+                path[(current[0]+1,current[1])] = (current[0], current[1])
+        if (current[1]+2)<=len(grid):
+            if grid[current[0]][current[1]+1]==1 and ([current[0],current[1]+1] not in visited):
+                #fn[1]=gn+step+heuristic[current[0]][current[1]+1]
+                print("right")
+                open_nodes.append([current[0],current[1]+1])
+                if (current[0],current[1]+1) in gn:
+                    if gn[(current[0],current[1]+1)]>gn[(current[0],current[1])]+step:
+                        gn[(current[0],current[1]+1)]=gn[(current[0],current[1])]+step
+                else:
+                    gn[(current[0],current[1]+1)]=gn[(current[0],current[1])]+step
+                fn.append(gn[(current[0],current[1]+1)]+heuristic[current[0]][current[1]+1])
+                path[(current[0],current[1]+1)] = (current[0], current[1])
+        if (current[0]-1)>=0:
+            if grid[current[0]-1][current[1]]==1 and ([current[0]-1,current[1]] not in visited):
+                #fn[2]=gn+step+heuristic[current[0]-1][current[1]]
+                print("up")
+                open_nodes.append([current[0]-1,current[1]])
+                if (current[0]-1,current[1]) in gn:
+                    if gn[(current[0]-1,current[1])]>gn[(current[0],current[1])]+step:
+                        gn[(current[0]-1,current[1])]=gn[(current[0],current[1])]+step
+                else: 
+                    gn[(current[0]-1,current[1])]=gn[(current[0],current[1])]+step
+                fn.append(gn[(current[0]-1,current[1])]+heuristic[current[0]-1][current[1]])
+                path[(current[0]-1,current[1])] = (current[0], current[1])
+        if (current[1]-1)>=0:
+            if grid[current[0]][current[1]-1]==1 and ([current[0],current[1]-1] not in visited):
+                #fn[3]=gn+step+heuristic[current[0]][current[1]-1]
+                print("left")
+                open_nodes.append([current[0],current[1]-1])
+                if (current[0],current[1]-1) in gn:             
+                    if gn[(current[0],current[1]-1)]>gn[(current[0],current[1])]+step:
+                        gn[(current[0],current[1]-1)]=gn[(current[0],current[1])]+step
+                else: 
+                    gn[(current[0],current[1]-1)]=gn[(current[0],current[1])]+step
+                fn.append(gn[(current[0],current[1]-1)]+heuristic[current[0]][current[1]-1])
+                path[(current[0],current[1]-1)] = (current[0], current[1])
+        print(fn)
+        
+        mini=min(fn)
+        print(mini)
+        
+        for i in range(len(fn)):
+            if mini==fn[i]:
+                position=i
+        print(position)
+        
+        print(path)
+        
+        visited.append(current.copy())
+        current=open_nodes[position]
+        
+
+        open_nodes.remove(current)
+        fn.pop(position)
+        
+            
+
+        print(current)
+        #print(visited)
+        print(open_nodes)
+            #print(gn)
+        
+    full_path=[]
+    current=end
+    full_path.append(current)
+    while (current[0],current[1]) != (start[0],start[1]):
+        current=path[(current[0],current[1])]
+        full_path.append(current)
+        print(current)
+        
+    full_path.reverse()
+    print(full_path)
+        
+A_star_search(grid,start,end,heuristic)
