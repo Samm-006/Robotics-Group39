@@ -11,5 +11,10 @@ This project implements an assistive robot designed to help visually impaired in
 
 
 ### Pre-programmed packages:
-- Pyttsx3 – for TTS audio feedback
-- OpenCV- for object detection
+- pyttsx3 
+- opencv-python
+- numpy
+- pillow
+- ultralytics
+- matplotlib
+  
