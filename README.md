@@ -17,4 +17,6 @@ This project implements an assistive robot designed to help visually impaired in
 - pillow
 - ultralytics
 - matplotlib
+- math
+- copy
   
