@@ -1,10 +1,8 @@
-import numpy as np
 import math
 import copy
 
 def hc(grid,start,end):
     #Using euclidean distance as heuristic h(n)
-    #f(n)=g(n)+h(n)
     heuristic=copy.deepcopy(grid)
     for i in range(len(grid)):
         for j in range(len(grid)):
@@ -13,21 +11,22 @@ def hc(grid,start,end):
     return heuristic
 
 
-    
+#Output of SLAM     
 grid = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1],
     [0, 0, 0, 0, 0, 0, 0, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 0, 1],
-    [1, 0, 0, 0, 1, 0, 1, 0, 1],
-    [1, 0, 1, 1, 1, 0, 1, 0, 1],
+    [1, 0, 1, 1, 1, 1, 1, 0, 1],
+    [1, 0, 1, 0, 1, 0, 1, 0, 1],
+    [1, 0, 1, 0, 1, 0, 1, 0, 1],
     [1, 0, 1, 0, 1, 0, 1, 0, 1],
     [1, 1, 1, 1, 0, 1, 1, 1, 1],
     [1, 1, 0, 0, 0, 0, 0, 0, 1],
     [1, 1, 1, 1, 1, 1, 0, 1, 1]
 ]
 
-start=[7,1]
-end=[0,8]
+
+start=[0,8]
+end=[7,1]
 
 
 heuristic=hc(grid,start,end)
@@ -88,7 +87,7 @@ def A_star_search(grid,start,end,heuristic):
                 #fn[3]=gn+step+heuristic[current[0]][current[1]-1]
                 print("left")
                 open_nodes.append([current[0],current[1]-1])
-                if (current[0],current[1]-1) in gn:             
+                if (current[0],current[1]-1) in gn:            
                     if gn[(current[0],current[1]-1)]>gn[(current[0],current[1])]+step:
                         gn[(current[0],current[1]-1)]=gn[(current[0],current[1])]+step
                 else: 
@@ -96,6 +95,10 @@ def A_star_search(grid,start,end,heuristic):
                 fn.append(gn[(current[0],current[1]-1)]+heuristic[current[0]][current[1]-1])
                 path[(current[0],current[1]-1)] = (current[0], current[1])
         print(fn)
+        
+        if len(open_nodes)==0:
+            print("No path exists")
+            exit()
         
         mini=min(fn)
         print(mini)
@@ -108,7 +111,12 @@ def A_star_search(grid,start,end,heuristic):
         print(path)
         
         visited.append(current.copy())
+        
+        
+        
+        
         current=open_nodes[position]
+        
         
 
         open_nodes.remove(current)
@@ -120,6 +128,7 @@ def A_star_search(grid,start,end,heuristic):
         #print(visited)
         print(open_nodes)
             #print(gn)
+            
         
     full_path=[]
     current=end
