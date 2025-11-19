@@ -7,12 +7,27 @@ import pyttsx3
 
 # create the Robot instance.
 robot = Robot()
-engine = pyttsx3.init()
 
-engine.say("Simulation started")
-# get the time step of the current world.
-timestep = int(robot.getBasicTimeStep())
-engine.say("This robot is")
+# Initialisation TTS module
+engine = pyttsx3.init()
+engine.setProperty("rate",180)
+
+def speak(audio):
+    engine.say(audio)
+    engine.runAndWait()
+   
+   
+def tts_from_yolo(detected_obj):
+    if not detected_obj:
+        return
+        
+    label = ", ".join(detected_obj)
+    feedback = f"{label} ahead, avoid hitting it."
+    speak(feedback)
+
+last_feedback_obj= None
+
+speak("Simulation started")
 
 # You should insert a getDevice-like function in order to get the
 # instance of a device of the robot. Something like:
