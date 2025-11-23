@@ -19,4 +19,5 @@ This project implements an assistive robot designed to help visually impaired in
 - matplotlib
 - math
 - copy
+- -queue
   
