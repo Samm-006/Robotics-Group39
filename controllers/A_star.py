@@ -1,5 +1,6 @@
 import math
 import copy
+from queue import PriorityQueue
 
 def hc(grid,start,end):
     #Using euclidean distance as heuristic h(n)
@@ -58,8 +59,8 @@ def test3():
 
 
 #uncomment to test a grid    
-grid=test1()
-#grid=test2()
+#grid=test1()
+grid=test2()
 #grid=test3()
 
 
@@ -75,7 +76,7 @@ def A_star_search(grid,start,end,heuristic):
     step=1
     gn={tuple(start):0}
     current=start.copy()
-    fn=[]
+    f=PriorityQueue()
     path={}
     while end not in visited:
         if (current[0]+2)<=len(grid):
@@ -87,7 +88,7 @@ def A_star_search(grid,start,end,heuristic):
                         gn[(current[0]+1,current[1])]=gn[(current[0],current[1])]+step
                 else:
                      gn[(current[0]+1,current[1])]=gn[(current[0],current[1])]+step
-                fn.append(gn[(current[0]+1,current[1])]+heuristic[current[0]+1][current[1]])
+                f.put((gn[(current[0]+1,current[1])]+heuristic[current[0]+1][current[1]],([current[0]+1,current[1]])))
                 path[(current[0]+1,current[1])] = (current[0], current[1])
         if (current[1]+2)<=len(grid):
             if grid[current[0]][current[1]+1]==1 and ([current[0],current[1]+1] not in visited):
@@ -98,7 +99,7 @@ def A_star_search(grid,start,end,heuristic):
                         gn[(current[0],current[1]+1)]=gn[(current[0],current[1])]+step
                 else:
                     gn[(current[0],current[1]+1)]=gn[(current[0],current[1])]+step
-                fn.append(gn[(current[0],current[1]+1)]+heuristic[current[0]][current[1]+1])
+                f.put((gn[(current[0],current[1]+1)]+heuristic[current[0]][current[1]+1],([current[0],current[1]+1])))
                 path[(current[0],current[1]+1)] = (current[0], current[1])
         if (current[0]-1)>=0:
             if grid[current[0]-1][current[1]]==1 and ([current[0]-1,current[1]] not in visited):
@@ -109,7 +110,7 @@ def A_star_search(grid,start,end,heuristic):
                         gn[(current[0]-1,current[1])]=gn[(current[0],current[1])]+step
                 else: 
                     gn[(current[0]-1,current[1])]=gn[(current[0],current[1])]+step
-                fn.append(gn[(current[0]-1,current[1])]+heuristic[current[0]-1][current[1]])
+                f.put((gn[(current[0]-1,current[1])]+heuristic[current[0]-1][current[1]],([current[0]-1,current[1]])))
                 path[(current[0]-1,current[1])] = (current[0], current[1])
         if (current[1]-1)>=0:
             if grid[current[0]][current[1]-1]==1 and ([current[0],current[1]-1] not in visited):
@@ -120,7 +121,7 @@ def A_star_search(grid,start,end,heuristic):
                         gn[(current[0],current[1]-1)]=gn[(current[0],current[1])]+step
                 else: 
                     gn[(current[0],current[1]-1)]=gn[(current[0],current[1])]+step
-                fn.append(gn[(current[0],current[1]-1)]+heuristic[current[0]][current[1]-1])
+                f.put((gn[(current[0],current[1]-1)]+heuristic[current[0]][current[1]-1],([current[0],current[1]-1])))
                 path[(current[0],current[1]-1)] = (current[0], current[1])
        
         
@@ -128,18 +129,14 @@ def A_star_search(grid,start,end,heuristic):
             print("No path exists")
             exit()
         
-        mini=min(fn)
-        
-        for i in range(len(fn)):
-            if mini==fn[i]:
-                position=i
-        
+                
+        values=f.get()
+   
         visited.append(current.copy())
 
-        current=open_nodes[position]
+        current=list(values[1])
 
         open_nodes.remove(current)
-        fn.pop(position)
         
     full_path=[]
     current=end
