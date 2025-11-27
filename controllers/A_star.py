@@ -11,6 +11,7 @@ def hc(grid,start,end):
     return heuristic
 
 
+#Robot's position and goal 
 start=[1,7]
 end=[7,1]
 
@@ -70,7 +71,9 @@ heuristic=hc(grid,start,end)
 
 
 def A_star_search(grid,start,end,heuristic):
-    #Every step cost 1 g(n)
+    #Main A* algorithm
+    
+    #Initialises visited nodes, open nodes, step cost, gn, current node, fn and path connection two nodes
     visited=[]
     open_nodes=[]
     step=1
@@ -79,9 +82,12 @@ def A_star_search(grid,start,end,heuristic):
     f=PriorityQueue()
     path={}
     while end not in visited:
+        #Until a path is created, checks if neighbouring nodes is available to search and not already visited
+        #For each neighbouring node possible, update open node list, gn value, fn value and path connection between two nodes
+        
+        #Looks at node below
         if (current[0]+2)<=len(grid):
             if grid[current[0]+1][current[1]]==1 and ([current[0]+1,current[1]] not in visited):
-                #Looks at node below
                 open_nodes.append([current[0]+1,current[1]])
                 if (current[0]+1,current[1]) in gn:
                     if gn[(current[0]+1,current[1])]>gn[(current[0],current[1])]+step:
@@ -90,9 +96,9 @@ def A_star_search(grid,start,end,heuristic):
                      gn[(current[0]+1,current[1])]=gn[(current[0],current[1])]+step
                 f.put((gn[(current[0]+1,current[1])]+heuristic[current[0]+1][current[1]],([current[0]+1,current[1]])))
                 path[(current[0]+1,current[1])] = (current[0], current[1])
+        #Looks at node right
         if (current[1]+2)<=len(grid):
             if grid[current[0]][current[1]+1]==1 and ([current[0],current[1]+1] not in visited):
-                #Looks at node right
                 open_nodes.append([current[0],current[1]+1])
                 if (current[0],current[1]+1) in gn:
                     if gn[(current[0],current[1]+1)]>gn[(current[0],current[1])]+step:
@@ -101,9 +107,9 @@ def A_star_search(grid,start,end,heuristic):
                     gn[(current[0],current[1]+1)]=gn[(current[0],current[1])]+step
                 f.put((gn[(current[0],current[1]+1)]+heuristic[current[0]][current[1]+1],([current[0],current[1]+1])))
                 path[(current[0],current[1]+1)] = (current[0], current[1])
+        #Looks at node above
         if (current[0]-1)>=0:
             if grid[current[0]-1][current[1]]==1 and ([current[0]-1,current[1]] not in visited):
-                #Looks at node above
                 open_nodes.append([current[0]-1,current[1]])
                 if (current[0]-1,current[1]) in gn:
                     if gn[(current[0]-1,current[1])]>gn[(current[0],current[1])]+step:
@@ -111,10 +117,10 @@ def A_star_search(grid,start,end,heuristic):
                 else: 
                     gn[(current[0]-1,current[1])]=gn[(current[0],current[1])]+step
                 f.put((gn[(current[0]-1,current[1])]+heuristic[current[0]-1][current[1]],([current[0]-1,current[1]])))
-                path[(current[0]-1,current[1])] = (current[0], current[1])
+                path[(current[0]-1,current[1])] = (current[0], current[1])      
+        #Looks at node left
         if (current[1]-1)>=0:
             if grid[current[0]][current[1]-1]==1 and ([current[0],current[1]-1] not in visited):
-                #Looks at the nodel left
                 open_nodes.append([current[0],current[1]-1])
                 if (current[0],current[1]-1) in gn:            
                     if gn[(current[0],current[1]-1)]>gn[(current[0],current[1])]+step:
@@ -125,11 +131,12 @@ def A_star_search(grid,start,end,heuristic):
                 path[(current[0],current[1]-1)] = (current[0], current[1])
        
         
+        #Stops code if no possible path exists
         if len(open_nodes)==0:
             print("No path exists")
             exit()
         
-                
+        #Finds next node to expand      
         values=f.get()
    
         visited.append(current.copy())
@@ -137,7 +144,8 @@ def A_star_search(grid,start,end,heuristic):
         current=list(values[1])
 
         open_nodes.remove(current)
-        
+     
+    #Uses dictionary to trace from the end node to start node to create the full path    
     full_path=[]
     current=end
     full_path.append(tuple(current))
@@ -147,6 +155,8 @@ def A_star_search(grid,start,end,heuristic):
         
     full_path.reverse()
     print("Order of nodes:", full_path)
+    
+    #Using the full path, prints the directions to go
     
     order=[]
     i=0
@@ -163,4 +173,7 @@ def A_star_search(grid,start,end,heuristic):
             order.append("left")
             
     print("Directions to end node:",order)
+    
+    
+    
 A_star_search(grid,start,end,heuristic)
