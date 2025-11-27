@@ -94,10 +94,10 @@ while robot.step(timestep) != -1:
     
     print("Running SLAM :", round(x, 3), round(y, 3), round(theta, 3))
 
-     # Read the sensors:
+    # Read the sensors:
     cell = w2m(x, y)
     if cell: 
-        grid [cell[0]][cell[1]] -= 0.05
+        grid [cell[0]][cell[1]] -= 1
         
     for i, s in enumerate(ir_sensors):
         if s is None:
@@ -113,14 +113,14 @@ while robot.step(timestep) != -1:
             
         c = w2m(hx, hy)
         if c:
-            grid [c[0]][c[1]]+= 0.2
+            grid [c[0]][c[1]]+= 0
           
           
     grid = np.clip(grid, -5.0, 5.0)
     
     step_count += 1
     
-    #binary for A* (0= no obstacle, 1= obstacle)
+    #binary for A* (1= no obstacle, 0= obstacle)
     binary_grid = (grid > 0.3).astype(int)
     
     if step_count % 10 ==0:
