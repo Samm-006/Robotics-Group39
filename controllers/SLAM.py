@@ -57,7 +57,6 @@ step_count=0
 def w2m(px, py):
     mx = int((px+ SIZE/2.0)/RES)
     my = int((py+ SIZE/2.0)/RES)
-    return(mx, my) 
     if 0 <= mx < N and 0 <= my < N :
         return (mx,my)
     return None
