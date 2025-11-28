@@ -31,19 +31,20 @@ engine = pyttsx3.init()
 engine.setProperty("rate",180)
 engine.setProperty('volume', 0.9)
 
+TTS_INTERVAL = 400 
+last_tts_time = 0 
+tts_cooldown = 10
 
 engine.say("Simulation started")
 
 # Object avoidance Params
-CRUISE_SPEED = 3.0   
+CRUISE_SPEED = 5.0  
 TURN_SPEED = 0.5     
-OBSTACLE_DIST = 0.8 
+OBSTACLE_DIST = 0.4
     
 robot_state = 'FORWARD'
 state_timer = 0
 
-last_detected_obj = "None"
-seen_objects = set()
 
 # Main loop:
 # - perform simulation steps until Webots is stopping the controller
@@ -78,7 +79,8 @@ while robot.step(timestep) != -1:
     left_wheel_speed = 0.0
     right_wheel_speed = 0.0
     speed = 2.5
-    
+
+    # Object avoidance using LIDAR (stop → reverse → turn → continue)
     lidar_data = lidar.getRangeImage()
     if not lidar_data: 
         continue
@@ -91,22 +93,33 @@ while robot.step(timestep) != -1:
     min_front = min(valid_readings) if valid_readings else 10.0
    
     if robot_state == 'FORWARD':
+        if step_count % TTS_INTERVAL == 0:
+            engine.say("Moving forward")
+            engine.runAndWait()
+
         if min_front < OBSTACLE_DIST:
             robot_state = 'REVERSE'
             state_timer = 60 
         else:
             left_motor.setVelocity(CRUISE_SPEED)
             right_motor.setVelocity(CRUISE_SPEED)
+        
     elif robot_state == 'REVERSE':
         if state_timer > 0:
             left_motor.setVelocity(-1.0)
             right_motor.setVelocity(-1.0)
             state_timer -= 1
         else:
+        # To Say "Turning" once before starting turn ---
+            print("Status: Turning...")
+            engine.say("Turning now")
+            engine.runAndWait()
+                
             robot_state = 'TURN'
             state_timer = 60 
             direction = 1 if random.random() > 0.5 else -1
             current_turn_velocity = TURN_SPEED * direction
+        
     elif robot_state == 'TURN':
         if state_timer > 0:
             left_motor.setVelocity(-current_turn_velocity)
@@ -116,11 +129,9 @@ while robot.step(timestep) != -1:
             if min_front > OBSTACLE_DIST + 0.1:
                 robot_state = 'FORWARD'
             else:
-                state_timer = 30        
-         
-    
-
-            # Step 7: Integrate with the TTS module 
+                state_timer = 30 
+  
+             # Step 7: Integrate with the TTS module 
             # Audio Feedback and Retrieving Information on Detected Objects
             boxes = r.boxes
             for box in boxes:
@@ -133,23 +144,30 @@ while robot.step(timestep) != -1:
                  
                 # Save last object detected
                 last_detected_obj = cls_name 
+                current_time = time.time()
                  
                 # TTS Voice output for new object
-                if float(box.conf[0]) > 0.5 and cls_name not in seen_objects:
-                    engine.say(f"{cls_name} ahead avoid hitting it")
-                    engine.runAndWait()
-                    seen_objects.add(cls_name)
-                    
-# Step 8: Wall Inspection
-        # Reading distance
-        distance = distance_sensor.getValue()
+                if float(box.conf[0]) > 0.5:
+                    if current_time - last_tts_time > tts_cooldown:
+                        engine.say(f"{cls_name} ahead avoid hitting it")
+                        engine.runAndWait()
+                        last_tts_time = current_time
+            
+  
+    # Step 8: Wall Inspection
+    # Reading distance
+    distance = distance_sensor.getValue()
 
         # Debug
         #print("distance:", distance)
 
-        # Distance less than 0.5 and YOLO fails to detect objects → Classified as a wall
-        if distance < 0.5 and len(detected_objects) == 0:
-            print("Wall")
+    current_time = time.time()
+    # Distance less than 0.5 and YOLO fails to detect objects → Classified as a wall
+    if distance < 0.5 and len(detected_objects) == 0:
+        print("Wall")
+        if current_time - last_tts_time > tts_cooldown:
             engine.say("Wall ahead avoid hitting it")
             engine.runAndWait()
-        
+            last_tts_time = current_time
+
+            
