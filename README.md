@@ -18,7 +18,7 @@ The objective of this project is to assess how integrating SLAM, A* pathfinding,
 - matplotlib
 - math
 - copy
-- queue
+- heapdict
 
 ### Group 39:
 - Tarfah Almaghlouth txa250@student.bham.ac.uk
