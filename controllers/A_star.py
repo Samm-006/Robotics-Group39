@@ -1,13 +1,13 @@
 import math
 import copy
-from queue import PriorityQueue
+import heapdict
 
 def hc(grid,start,end):
     #Using euclidean distance as heuristic h(n)
     heuristic=copy.deepcopy(grid)
     for i in range(len(grid)):
         for j in range(len(grid)):
-            heuristic[i][j]=math.sqrt((j-end[1])**2+(i-end[0])**2)
+                heuristic[i][j]=math.sqrt((j-end[1])**2+(i-end[0])**2)
     return heuristic
 
 
@@ -61,7 +61,7 @@ def test3():
 
 #uncomment to test a grid    
 #grid=test1()
-grid=test2()
+#grid=test2()
 #grid=test3()
 
 
@@ -75,75 +75,71 @@ def A_star_search(grid,start,end,heuristic):
     
     #Initialises visited nodes, open nodes, step cost, gn, current node, fn and path connection two nodes
     visited=[]
-    open_nodes=[]
     step=1
     gn={tuple(start):0}
     current=start.copy()
-    f=PriorityQueue()
+    fn=heapdict.heapdict()
     path={}
     while end not in visited:
         #Until a path is created, checks if neighbouring nodes is available to search and not already visited
         #For each neighbouring node possible, update open node list, gn value, fn value and path connection between two nodes
         
         #Looks at node below
-        if (current[0]+2)<=len(grid):
+        if (current[0]+1)<len(grid):
             if grid[current[0]+1][current[1]]==1 and ([current[0]+1,current[1]] not in visited):
-                open_nodes.append([current[0]+1,current[1]])
                 if (current[0]+1,current[1]) in gn:
                     if gn[(current[0]+1,current[1])]>gn[(current[0],current[1])]+step:
                         gn[(current[0]+1,current[1])]=gn[(current[0],current[1])]+step
                 else:
                      gn[(current[0]+1,current[1])]=gn[(current[0],current[1])]+step
-                f.put((gn[(current[0]+1,current[1])]+heuristic[current[0]+1][current[1]],([current[0]+1,current[1]])))
+                fn[(current[0]+1,current[1])]=(gn[(current[0]+1,current[1])]+heuristic[current[0]+1][current[1]])
                 path[(current[0]+1,current[1])] = (current[0], current[1])
         #Looks at node right
-        if (current[1]+2)<=len(grid):
+        if (current[1]+1)<len(grid):
             if grid[current[0]][current[1]+1]==1 and ([current[0],current[1]+1] not in visited):
-                open_nodes.append([current[0],current[1]+1])
                 if (current[0],current[1]+1) in gn:
                     if gn[(current[0],current[1]+1)]>gn[(current[0],current[1])]+step:
                         gn[(current[0],current[1]+1)]=gn[(current[0],current[1])]+step
                 else:
                     gn[(current[0],current[1]+1)]=gn[(current[0],current[1])]+step
-                f.put((gn[(current[0],current[1]+1)]+heuristic[current[0]][current[1]+1],([current[0],current[1]+1])))
+                fn[(current[0],current[1]+1)]=(gn[(current[0],current[1]+1)]+heuristic[current[0]][current[1]+1])
                 path[(current[0],current[1]+1)] = (current[0], current[1])
         #Looks at node above
         if (current[0]-1)>=0:
             if grid[current[0]-1][current[1]]==1 and ([current[0]-1,current[1]] not in visited):
-                open_nodes.append([current[0]-1,current[1]])
                 if (current[0]-1,current[1]) in gn:
                     if gn[(current[0]-1,current[1])]>gn[(current[0],current[1])]+step:
                         gn[(current[0]-1,current[1])]=gn[(current[0],current[1])]+step
                 else: 
                     gn[(current[0]-1,current[1])]=gn[(current[0],current[1])]+step
-                f.put((gn[(current[0]-1,current[1])]+heuristic[current[0]-1][current[1]],([current[0]-1,current[1]])))
+                fn[(current[0]-1,current[1])]=(gn[(current[0]-1,current[1])]+heuristic[current[0]-1][current[1]])
                 path[(current[0]-1,current[1])] = (current[0], current[1])      
         #Looks at node left
         if (current[1]-1)>=0:
             if grid[current[0]][current[1]-1]==1 and ([current[0],current[1]-1] not in visited):
-                open_nodes.append([current[0],current[1]-1])
                 if (current[0],current[1]-1) in gn:            
                     if gn[(current[0],current[1]-1)]>gn[(current[0],current[1])]+step:
                         gn[(current[0],current[1]-1)]=gn[(current[0],current[1])]+step
                 else: 
                     gn[(current[0],current[1]-1)]=gn[(current[0],current[1])]+step
-                f.put((gn[(current[0],current[1]-1)]+heuristic[current[0]][current[1]-1],([current[0],current[1]-1])))
+                fn[(current[0],current[1]-1)]=(gn[(current[0],current[1]-1)]+heuristic[current[0]][current[1]-1])
                 path[(current[0],current[1]-1)] = (current[0], current[1])
        
         
         #Stops code if no possible path exists
-        if len(open_nodes)==0:
+        if len(fn)==0:
             print("No path exists")
             exit()
         
-        #Finds next node to expand      
-        values=f.get()
-   
-        visited.append(current.copy())
+        #Finds next node to expand  
+           
+        values=fn.popitem()
+        
+        visited.append(current.copy()) 
+        
 
-        current=list(values[1])
-
-        open_nodes.remove(current)
+        current=list(values[0])
+        
      
     #Uses dictionary to trace from the end node to start node to create the full path    
     full_path=[]
