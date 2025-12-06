@@ -30,9 +30,9 @@ The objective of this project is to assess how integrating SLAM, A* pathfinding,
 - **Tarfah Almaghlouth - SLAM**
 
     Responsible for implementing Simultaneous Localisation and Mapping (SLAM) to generate a real-time map of the environment and track robot’s position during navigation.
-- **Eesa Bazaewala – A Star Pathfinding**
+- **Eesa Bazarwala – A Star Pathfinding**
 
-    Developed the A* algorithm to compute optimal paths using SLAM, enabling the robot to find efficient path to goal state
+    Developed the A* algorithm to compute an optimal path using SLAM output and moved the robot using the efficient path from start to goal state. 
 - **Yixuan Zhu – YOLO Object Detection**
 
     Integrated YOLO with the robot’s camera to perform real-time object detection and classification within the indoor environment
