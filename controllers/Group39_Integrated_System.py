@@ -727,7 +727,7 @@ while robot.step(timestep) != -1:
                 #Initialise the angle the robot needs to travel and encoders
                 before_l=left_encoder.getValue()
                 before_r=right_encoder.getValue()
-                initial_forward=False
+                
                 
                 #Based on expanding the Proto node
                 wheel_radius= 0.019
@@ -737,7 +737,7 @@ while robot.step(timestep) != -1:
                 
                 left_motor.setVelocity(3)
                 right_motor.setVelocity(3)
-            
+                initial_forward=False
 
             
             else:
