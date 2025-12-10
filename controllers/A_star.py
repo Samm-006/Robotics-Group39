@@ -60,7 +60,7 @@ def test3():
 
 
 #uncomment to test a grid    
-#grid=test1()
+grid=test1()
 #grid=test2()
 #grid=test3()
 
@@ -173,3 +173,140 @@ def A_star_search(grid,start,end,heuristic):
     
     
 A_star_search(grid,start,end,heuristic)
+
+
+#Code developed from here onwards is mine but does not work unless integrated in SLAM
+#Working code is in Group_39_Integrated_System controller
+#this code is just to show what I have done
+''' 
+order=[]
+initial_turn=True
+initial_forward=True
+left_motor.setVelocity(0.0)
+right_motor.setVelocity(0.0)
+#Get position of robot relative to the grid
+start=w2m(x,y)
+start=list(start)
+print("Start cell: ",start)
+grid=binary_grid
+def create_goal():
+    #Get goal by picking a random part of the grid which is 1
+    picked=True
+    end=[]
+    while picked==True:
+        rand1=random.randint(0, N-1)
+        rand2=random.randint(0, N-1)
+        if grid[rand1][rand2]==1:
+            end.append(rand1)
+            end.append(rand2)
+            picked=False 
+    return end
+    
+#Initialise end node
+end=create_goal()
+print("End cell: ",end)
+
+
+if state=="TURN":
+       
+#To move the robot to the correct orientation    
+    if len(order)>j:
+        #To get the correct angle orientation
+        if order[j]=="right":
+            direction=0
+        if order[j]=="left":
+            direction=math.pi      
+        if order[j]=="up":
+            direction=((math.pi)/2)
+        if order[j]=="down":
+            direction=-((math.pi)/2)
+
+        
+        if initial_turn==True:
+            #Initialise the angle that the robot would turn, rotation angle and encoders
+            
+            angle=direction-angle
+            
+            #to get in -pi to pi using website https://stackoverflow.com/questions/27093704/converge-values-to-range-pi-pi-in-matlab-not-using-wraptopi
+            angle=angle - 2*math.pi*math.floor( (angle+math.pi)/(2*math.pi) );
+            
+            
+            before_l=left_encoder.getValue()
+            before_r=right_encoder.getValue()
+            
+            
+            #Based on expanding the Proto node
+            wheel_radius= 0.019
+            axle_length= 0.045+0.045
+            
+            #Based on the equation from website https://www.roboticsbook.org/S52_diffdrive_actions.html
+           
+            rotation=(axle_length*abs(angle))/(2*wheel_radius)
+            
+            #Move the robot on the spot left or right depending on angle
+            
+            if angle<0:
+                left_motor.setVelocity(1)
+                right_motor.setVelocity(-1)
+            else:
+                left_motor.setVelocity(-1)
+                right_motor.setVelocity(1) 
+            
+            
+                
+            initial_turn=False
+          
+        #Keeps on turning until the average encoder value reach the rotation angle and switch state to forward  
+        average_turn=(abs(left_encoder.getValue()-before_l)+abs(right_encoder.getValue()-before_r))/2  
+        if average_turn>=rotation:
+            left_motor.setVelocity(0.0)
+            right_motor.setVelocity(0.0)      
+            state="FORWARD"  
+            initial_forward=True
+            angle=direction
+            
+               
+    else:
+        #Once entered end node, the state is Idle
+        state="IDLE"
+   
+elif state=="FORWARD":
+    #To move a robot a certain distance
+    
+    if initial_forward==True:
+        
+        #Initialise the angle the robot needs to travel and encoders
+        before_l=left_encoder.getValue()
+        before_r=right_encoder.getValue()
+        
+        
+        #Based on expanding the Proto node
+        wheel_radius= 0.019
+        
+        #Working in radians 
+        distance_angle=RES/wheel_radius
+        
+        left_motor.setVelocity(3)
+        right_motor.setVelocity(3)
+        initial_forward=False
+
+    
+    else:
+        #Keeps on going forward until average angle is reached and then swtich state to Turn
+        average_distance_angle=(abs(left_encoder.getValue()-before_l)+abs(right_encoder.getValue()-before_r))/2  
+        if average_distance_angle>=distance_angle: 
+            left_motor.setVelocity(0.0)
+            right_motor.setVelocity(0.0)
+            j=j+1  
+            state="TURN"
+            initial_turn=True
+
+   
+        
+elif state=="IDLE":
+    #Finished running
+    print("Directions to end node:",order)
+    print("Finished")
+    exit() 
+
+'''
