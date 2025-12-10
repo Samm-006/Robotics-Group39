@@ -11,9 +11,8 @@ The objective of this project is to assess how integrating SLAM, A* pathfinding,
 
 #### *This has been implmented in [Webot Simulation](https://cyberbotics.com/)*
 To view the environment and the fully integrated system controller:<br/>
-
 - **World:** [Group39_apartment.wbt](https://github.com/Samm-006/Robotics-Group39/blob/main/worlds/Group39_apartment.wbt)<br/>
-- **Controller:** 
+- **Controller:** [Group39_Integrated_System.py](https://github.com/Samm-006/Robotics-Group39/blob/main/controllers/Group39_Integrated_System.py)<br/>
 
 ### Pre-programmed packages:
 - pyttsx3 
