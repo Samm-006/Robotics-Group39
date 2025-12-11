@@ -1,4 +1,3 @@
-
 # Import the libraries required for Webots and YOLO
 from controller import Robot
 import numpy as np  # For image conversion
@@ -246,7 +245,7 @@ while robot.step(timestep) != -1:
         
         step_count += 1
         
-        #binary for A* (1= no obstacle, 0= obstacle)
+        #binary for A* (1= free space, 0= obstacle)
         binary_grid = (grid > 0.1).astype(int)
         
         binary_grid = binary_grid.tolist()
