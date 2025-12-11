@@ -16,14 +16,15 @@ To view the environment and the fully integrated system controller:<br/>
 	<sub>***Note:** Other existing controllers (.py files) shows individuals coding contribution on their assigned algorithms<br/>(*This is for the contribution of intergrated system purposes only and only to show what each memeber has coded.*)</sub>
 ### Pre-programmed packages:
 - pyttsx3 
-- opencv-python
+- cv2
 - numpy
-- pillow
+- controller
 - ultralytics
-- matplotlib
+- time
 - math
 - copy
 - heapdict
+- random
 
 ### Group 39:
 - Tarfah Almaghlouth txa250@student.bham.ac.uk
