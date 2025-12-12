@@ -96,7 +96,7 @@ while robot.step(timestep) != -1:
     # Read the sensors:
     cell = w2m(x, y)
     if cell: 
-        grid [cell[0]][cell[1]] -= 1
+        grid [cell[0]][cell[1]] -= 0.05
         
     for i, s in enumerate(ir_sensors):
         if s is None:
@@ -112,7 +112,7 @@ while robot.step(timestep) != -1:
             
         c = w2m(hx, hy)
         if c:
-            grid [c[0]][c[1]]+= 0
+            grid [c[0]][c[1]]+= 0.2
           
           
     grid = np.clip(grid, -5.0, 5.0)
