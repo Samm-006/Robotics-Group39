@@ -15,7 +15,7 @@ To view the environment and the fully integrated system controller:<br/>
 - **Controller:** [Group39_Integrated_System.py](https://github.com/Samm-006/Robotics-Group39/blob/main/controllers/Group39_Integrated_System.py)<br/>
 	<sub>***Note:** Other existing controllers (.py files) shows individuals coding contribution on their assigned algorithms<br/>(*This is for the contribution of intergrated system purposes only.*)</sub>
 - **Report:** [Robotics_Group39_Report.pdf](https://github.com/Samm-006/Robotics-Group39/blob/main/Robotics_Group39_Report.pdf)
-- **Video Eplanation of Integrated System:** 
+- **Video Eplanation of Integrated System:** https://bham-my.sharepoint.com/personal/yxz1919_student_bham_ac_uk/_layouts/15/guestaccess.aspx?share=IQBoIxEiwIC9TLD-f_ZSiDEkAfdJIuv3sTzLR5LV3KSAQwo&e=1nOCD4
 ### Pre-programmed packages:
 - pyttsx3 
 - cv2
