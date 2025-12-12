@@ -1,4 +1,4 @@
-"""text_to_speech controller."""
+"""TTS_and_Object_Avoidance controller."""
 
 from controller import Robot, Keyboard 
 import pyttsx3 # For audio feedback
