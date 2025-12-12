@@ -14,6 +14,7 @@ To view the environment and the fully integrated system controller:<br/>
 - **World:** [Group39_apartment.wbt](https://github.com/Samm-006/Robotics-Group39/blob/main/worlds/Group39_apartment.wbt)<br/>
 - **Controller:** [Group39_Integrated_System.py](https://github.com/Samm-006/Robotics-Group39/blob/main/controllers/Group39_Integrated_System.py)<br/>
 	<sub>***Note:** Other existing controllers (.py files) shows individuals coding contribution on their assigned algorithms<br/>(*This is for the contribution of intergrated system purposes only.*)</sub>
+- **Video explanation of integrated system:** 
 ### Pre-programmed packages:
 - pyttsx3 
 - cv2
