@@ -34,7 +34,7 @@ To view the environment and the fully integrated system controller:<br/>
 
 ### Team Roles:
 - **Tarfah Almaghlouth - SLAM**<br/>
-    Responsible for implementing Simultaneous Localisation and Mapping (SLAM) to generate a real-time map of the environment and track robot’s position during navigation.
+    Responsible for implementing Simultaneous Localisation and Mapping (SLAM) to generate a real-time map of the environment and track robot’s position during navigation using odometry.
 - **Eesa Bazarwala – A Star Pathfinding**<br/>
     Developed the A* algorithm to compute an optimal path using SLAM output and moved the robot using the efficient path from start to goal state. 
 - **Yixuan Zhu – YOLO Object Detection**<br/>
