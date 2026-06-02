@@ -1,48 +1,190 @@
-**Robotics-Group39**
+# Emergency Sign Language Interpreter
 
-## Assistive Robot for Safe Navigation and Object Detection for Visually Impaired Individuals with Audio Feedback
-
-### Overview
-
-This project implements an assistive robot designed to help visually impaired individuals, capable of detecting objects with audio feedback to warn the user and guide them safely through a room. The system implemented combines different algorithms, SLAM for mapping and localisation, A* for optimal path, YOLO for object detection, object avoidance to avoid collision, and Text-to-Speech (TTS) for audio feedback, all into one integrated system.
-
-### Objective 
-The objective of this project is to assess how integrating SLAM, A* pathfinding, YOLO object detection, LiDAR-based obstacle avoidance, and Text-to-Speech (TTS) impacts the robot’s ability to safely travel and provide visually impaired individuals with helpful navigational information. The robot’s ability to avoid collisions in a simulated indoor environment, detection accuracy and navigation efficiency are all measures to evaluate the system. The project’s goal is to determine whether combining these components into a single framework makes navigation safer and more reliable.
-
-#### *This has been implmented in [Webot Simulation](https://cyberbotics.com/)*
-To view the environment and the fully integrated system controller:<br/>
-- **World:** [Group39_apartment.wbt](https://github.com/Samm-006/Robotics-Group39/blob/main/worlds/Group39_apartment.wbt)<br/>
-- **Controller:** [Group39_Integrated_System.py](https://github.com/Samm-006/Robotics-Group39/blob/main/controllers/Group39_Integrated_System.py)<br/>
-	<sub>***Note:** Other existing controllers (.py files) shows individuals coding contribution on their assigned algorithms<br/>(*This is for the contribution of intergrated system purposes only.*)</sub>
-- **Report:** [Robotics_Group39_Report.pdf](https://github.com/Samm-006/Robotics-Group39/blob/main/Robotics_Group39_Report.pdf)
-- **Video Eplanation of Integrated System:** https://bham-my.sharepoint.com/personal/yxz1919_student_bham_ac_uk/_layouts/15/guestaccess.aspx?share=IQBoIxEiwIC9TLD-f_ZSiDEkAfdJIuv3sTzLR5LV3KSAQwo&e=1nOCD4
-### Pre-programmed packages:
-- pyttsx3 
-- cv2
-- numpy
-- controller
-- ultralytics
-- time
-- math
-- copy
-- heapdict
-- random
-
-### Group 39:
-- Tarfah Almaghlouth txa250@student.bham.ac.uk
-- Eesa Bazarwala exb651@student.bham.ac.uk
-- Yixuan Zhu yxz1919@student.bham.ac.uk
-- Sama Alzahrani sxa1705@student.bham.ac.uk
-
-### Team Roles:
-- **Tarfah Almaghlouth - SLAM**<br/>
-    Responsible for implementing Simultaneous Localisation and Mapping (SLAM) to generate a real-time map of the environment and track robot’s position during navigation using odometry.
-- **Eesa Bazarwala – A Star Pathfinding**<br/>
-    Developed the A* algorithm to compute an optimal path using SLAM output and moved the robot using the efficient path from start to goal state. 
-- **Yixuan Zhu – YOLO Object Detection**<br/>
-    Integrated YOLO with the robot’s camera to perform real-time object detection and classification within the indoor environment
-- **Sama Alzahrani – TTS & Object Avoidance**<br/>
-    Integrated the Text-to-Speech for audio feedback and implemented the object avoidance module using LiDAR to prevent collisions.
+> A real-time hand gesture recognition system that translates emergency sign language into spoken phrases — built for Deaf and Hard-of-Hearing (DHH) individuals.
 
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Streamlit-FF4B4B?style=for-the-badge&logo=streamlit)](https://emergency-gesture-recognition.streamlit.app/)
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python)](https://www.python.org/)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.16.2-FF6F00?style=for-the-badge&logo=tensorflow)](https://www.tensorflow.org/)
+[![MediaPipe](https://img.shields.io/badge/MediaPipe-0.10.21-0097A7?style=for-the-badge)](https://ai.google.dev/edge/mediapipe)
+---
 
+##  Live Demo
+
+**Try it now →** [https://emergency-gesture-recognition.streamlit.app/](https://emergency-gesture-recognition.streamlit.app/)
+
+1. Click **Start** to enable your webcam
+2. Perform one of the 15 emergency gestures
+3. The app displays the translated phrase in real time
+4. Press **Translator Audio** to hear the phrase spoken aloud
+
+---
+
+##  Overview
+
+This project bridges the communication gap between DHH individuals and hearing emergency responders. It recognises **15 emergency sign language gestures** and maps them to full emergency phrases such as:
+
+| Gesture | Emergency Phrase |
+|---------|-----------------|
+| `help` | I need help |
+| `Ambulance` | Call an ambulance |
+| `Fire` | There is a fire |
+| `hurt` | I am hurt |
+| `Police` | Call the police |
+| `short of breath` | I am short of breath |
+
+---
+
+## Project Structure
+
+
+```
+project/
+│
+├── 01_mediapipe_landmarks.py     # Webcam + hand landmark visualisation
+├── 02_collect_dataset.py         # Gesture data collection tool
+├── 03_trained_model.ipynb        # Model training notebook
+├── 04_real_time_inference.py     # Standalone real-time inference
+├── app.py                        # Streamlit web application
+├── requirements.txt              # Project dependencies
+│
+├── model/
+│   ├── hand_landmarker.task      # MediaPipe pretrained model
+│   └── gesture_classifier.keras  # Trained gesture classifier
+│
+├── data/
+│   ├── dataset.csv               # Collected landmark data (60,000 samples)
+│   └── dataset_labels.csv        # Gesture class labels (0–14)
+│
+└── utils/
+    ├── preprocessing.py          # Landmark normalisation pipeline
+    └── drawing_landmarks.py      # Landmark drawing + extraction helpers
+```
+---
+
+## Installation
+
+> **Python 3.12 is required.** The exact versions of MediaPipe and TensorFlow used in this project only work with Python 3.12.
+### 1. Clone the repository
+
+```bash
+git clone https://git.cs.bham.ac.uk/projects-2025-26/sxa1705.git
+```
+
+### 2. Create a virtual environment
+
+```bash
+python -m venv venv
+source venv/bin/activate        # macOS / Linux
+venv\Scripts\activate           # Windows
+```
+
+### 3. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Download the MediaPipe model
+
+Download `hand_landmarker.task` from [MediaPipe Models](https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker) and place it inside the `model/` folder.
+
+---
+
+## Requirements
+
+**`requirements.txt`**
+
+```
+mediapipe==0.10.21
+tensorflow==2.16.2
+opencv-python==4.11.0.86
+streamlit==1.53.0
+streamlit-webrtc==0.64.5
+numpy==1.26.4
+pandas==2.3.3
+scikit-learn==1.8.0
+matplotlib==3.10.8
+seaborn==0.13.2
+gTTS==2.5.4
+av==16.1.0
+```
+> These are the exact versions tested to work together on Python 3.12
+---
+
+##  Running the Project
+
+### Run the web application
+
+```bash
+streamlit run app.py
+```
+
+### Run standalone real-time inference
+
+```bash
+python 04_real_time_inference.py
+```
+
+
+### Collect your own gesture data
+
+```bash
+python 02_collect_dataset.py
+```
+
+| Key | Action |
+|-----|--------|
+| `k` | Start recording frames |
+| `n` | Stop recording |
+| `0`–`9` | Select gesture label 0–9 |
+| `a` `s` `d` `f` `g` | Select gesture label 10–14 |
+| `ESC` | Exit |
+
+
+### Train the model
+
+Open and run `03_trained_model.ipynb` in Jupyter or VS Code.
+
+---
+
+
+##  How It Works
+
+```
+Webcam → MediaPipe → Preprocessing → Feature Vector → Neural Network → Output
+  |           |             |               |                |             |
+RGB        21 kpts      Translate       84-dim           Softmax(15)   Phrase
+frames    × 2 hands     Flatten        vector            + Smoothing   + TTS
+                       Normalise
+```
+
+
+**Model architecture:**
+
+- Input: 84 features (21 landmarks × 2 coordinates × 2 hands)
+- `Dropout(0.1)` → `Dense(256, ReLU)` → `Dropout(0.2)` → `Dense(128, ReLU)` → `Dropout(0.1)` → `Dense(64, ReLU)` → `Softmax(15)`
+- Trained on 60,000 samples across varied lighting, distance, and hand orientations
+
+---
+
+##  Dataset
+
+- **15 gesture classes:** I, need, Accident, Fire, Yes, No, Ambulance, Doctor, Police, fireman, hurt, emergency, short of breath, help, stop
+- **60,000 samples** (~4,000 per class)
+- Captured across: poor/good lighting · close/far distance · left/right hand · front/side orientation
+
+---
+
+##  Resources
+
+- [MediaPipe Hand Landmarker](https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker)
+- [TensorFlow Documentation](https://www.tensorflow.org/)
+- [Streamlit Documentation](https://docs.streamlit.io/)
+
+---
+
+## Author
+
+**Sama Sultan A Alzahrani** · BSc Artificial Intelligence and Computer Science  
+University of Birmingham · Supervisor: Samuel Montero Hernandez
